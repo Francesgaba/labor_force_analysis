@@ -14,7 +14,7 @@ setup(
     author_email='zikih25@gmail.com',
     license='MIT',
     url='https://github.com/Francesgaba/labor_force_analysis',
-    packages=['stock_analysis'],
+    packages=['laborforce_analysis'],
     install_requires=[
         'matplotlib>=3.0.2',
         'numpy>=1.15.2',
