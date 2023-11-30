@@ -8,13 +8,35 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 class ContinuousVariableVisualization:
+    """
+    A class for visualizing continuous variables using histograms and boxplots.
+
+    This class utilizes both Matplotlib and Seaborn libraries to create visualizations, allowing
+    for a comparison between the plotting capabilities of the two libraries.
+
+    """
+
     def __init__(self, df):
+        """
+        Initialize a ContinuousVariableVisualization object with a DataFrame and predefined continuous variables.
+
+        Args:
+            df (pd.DataFrame): The DataFrame containing the data for visualization.
+        """
         self.df = df
         self.continuous_variables = ["lwg", "inc"]
 
     def plot_histograms_and_boxplots(self):
+        """
+        Plot histograms and boxplots for the specified continuous variables.
+
+        This method iterates through the predefined continuous variables and creates a 2x2 subplot structure
+        for each variable. It plots Matplotlib histograms, Seaborn histograms, Matplotlib boxplots, and Seaborn
+        boxplots for each variable, allowing for a visual comparison between the two libraries.
+
+        """
         for col in self.continuous_variables:
-            fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(15, 6))  # creating a 2x2 subplot structure for each variable
+            fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(15, 6))
 
             # Matplotlib histogram
             axes[0, 0].hist(self.df[col], bins=20, edgecolor='black', alpha=0.7)
@@ -36,6 +58,7 @@ class ContinuousVariableVisualization:
             plt.show()
 
 
+
 # In[ ]:
 
 
@@ -43,43 +66,38 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
-
 class CategoricalDataVisualization:
     """
-    A class to visualize categorical and discrete data in a DataFrame.
+    A class for visualizing categorical and discrete data in a DataFrame.
 
-    This class provides methods to create bar plots using both Matplotlib and Seaborn
-    to visualize the distribution of categorical and discrete attributes.
-
-    Attributes:
-    df (pd.DataFrame): A pandas DataFrame containing the data to be visualized.
+    This class provides methods to create bar chart plots using both Matplotlib and Seaborn for the specified
+    categorical and discrete attributes. It creates side-by-side visualizations for comparison.
     """
 
     def __init__(self, df):
         """
-        Initializes the CategoricalDataVisualization with a DataFrame.
+        Initialize the CategoricalDataVisualization class with a DataFrame.
 
-        Parameters:
-        df (pd.DataFrame): A pandas DataFrame containing the data for visualization.
+        Args:
+            df (pd.DataFrame): The DataFrame containing the data for visualization.
         """
         self.df = df
 
     def plot_distributions(self, attributes):
         """
-        Plots the distributions of the specified categorical and discrete attributes
-        using both Matplotlib and Seaborn.
+        Plot the distributions of specified categorical and discrete variables.
 
-        For each attribute, this method creates a figure with two subplots: one for
-        the Matplotlib bar plot and the other for the Seaborn count plot.
+        This method creates a figure with two subplots for each attribute, one using Matplotlib to generate
+        a bar chart and the other using Seaborn to create a count plot. The subplots are displayed side by side.
 
-        Parameters:
-        attributes (list of str): A list of column names from the DataFrame representing 
-                                  the categorical and discrete attributes to be visualized.
+        Args:
+            attributes (list): A list of attribute names to visualize.
+
         """
         for col in attributes:
-            fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(20, 3)) 
+            fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(20, 3))
 
-            # Matplotlib bar plot
+            # Matplotlib bar chart plot
             axes[0].bar(self.df[col].value_counts().index, self.df[col].value_counts())
             axes[0].set_title(f'Matplotlib - Distribution of {col}')
             axes[0].tick_params(axis='x', rotation=90)
@@ -92,7 +110,6 @@ class CategoricalDataVisualization:
             plt.tight_layout()
             plt.show()
 
-
 # In[5]:
 
 
@@ -104,29 +121,32 @@ class CorrelationMatrixVisualization:
     """
     A class for encoding categorical variables and visualizing correlation matrices.
 
-    This class provides methods to encode specified categorical variables in a DataFrame
-    and to plot the resulting correlation matrix using both Matplotlib and Seaborn.
+    This class allows for the encoding of specified categorical variables in a DataFrame and
+    provides methods to visualize the correlation matrix using both Matplotlib and Seaborn for comparison.
 
-    Attributes:
-    df (pd.DataFrame): A pandas DataFrame containing the data to be visualized and encoded.
+    Args:
+        df (pd.DataFrame): The DataFrame containing the data for visualization.
     """
 
     def __init__(self, df):
         """
-        Initializes the CorrelationMatrixVisualization with a DataFrame.
+        Initialize the CorrelationMatrixVisualization with a DataFrame.
 
-        Parameters:
-        df (pd.DataFrame): A pandas DataFrame containing the data for visualization and encoding.
+        Args:
+            df (pd.DataFrame): The DataFrame containing the data for visualization.
         """
         self.df = df
+        self.default_exclude = ['rowname'] if 'rowname' in df.columns else []
 
     def encode_categorical_variables(self, columns, mapping):
         """
-        Encodes specified categorical variables in the DataFrame.
+        Encode specified categorical variables in the DataFrame.
 
-        Parameters:
-        columns (list of str): A list of column names to be encoded.
-        mapping (dict): A dictionary defining the mapping for encoding.
+        Args:
+            columns (list): A list of column names to be encoded.
+            mapping (dict): A dictionary defining the mapping for encoding.
+
+
         """
         for col in columns:
             if col in self.df.columns:
@@ -134,19 +154,16 @@ class CorrelationMatrixVisualization:
 
     def plot_correlation_matrix(self, exclude_columns=None):
         """
-        Plots the correlation matrix of the DataFrame using both Matplotlib and Seaborn.
+        Plot the correlation matrix of the DataFrame using both Matplotlib and Seaborn.
 
-        Parameters:
-        exclude_columns (list of str, optional): A list of column names to be excluded from the correlation matrix.
+        Args:
+            exclude_columns (list): A list of column names to exclude from the correlation matrix.
         """
-        if exclude_columns is not None:
-            selected_columns = self.df.columns[~self.df.columns.isin(exclude_columns)]
-        else:
-            selected_columns = self.df.columns
+       
+        # Calculate the correlation matrix
+        correlation_matrix = self.df.drop(columns=exclude_columns).corr()
 
-        correlation_matrix = self.df[selected_columns].corr()
-
-    
+        # Matplotlib correlation matrix visualization.
         plt.figure(figsize=(5, 4))
         plt.matshow(correlation_matrix, fignum=1)
         plt.colorbar()
@@ -155,7 +172,7 @@ class CorrelationMatrixVisualization:
         plt.title('Matplotlib - Correlation Matrix', pad=20)
         plt.show()
 
-        # Seaborn heatmap
+        # Seaborn heatmap visualization of the correlation matrix.
         plt.figure(figsize=(5, 4))
         sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
         plt.title('Seaborn - Correlation Matrix')
